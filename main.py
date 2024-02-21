@@ -7,7 +7,7 @@ from pacman import Pacman
 pygame.init()
 
 # Налаштування дисплею
-WIDTH, HEIGHT = 1200, 1080
+WIDTH, HEIGHT = 1200, 900
 CELL_SIZE = 30
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pacman")
@@ -20,7 +20,7 @@ def main():
     all_sprites, walls = draw_maze()
 
     #Створення пакмана    
-    pacman = Pacman(3, 3)
+    pacman = Pacman(60, 60, speed=5)  # Начальная позиция пакмана в пикселях
     all_sprites.add(pacman)
 
     clock = pygame.time.Clock()
@@ -40,8 +40,6 @@ def main():
             pacman.direction = (0, -1)
         elif keys[pygame.K_DOWN]:
             pacman.direction = (0, 1)
-        else:
-            pacman.direction = (0, 0)
 
         pacman.update(walls)
 

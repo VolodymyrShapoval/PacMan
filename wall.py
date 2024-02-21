@@ -1,29 +1,7 @@
 import pygame
 
-
-maze_map = [
-    "xxxxxxxxxxxxxxxxxxxx",
-    "x                  x",
-    "x  xxxxx  xxxxx  xxx",
-    "x  xxxxx  xxxxx  xxx",
-    "x                  x",
-    "x  xxxxx  xxxxx  xxx",
-    "x  xxxxx  xxxxx  xxx",
-    "x  xxxxx  xxxxx  xxx",
-    "x  xxxxx  xxxxx  xxx",
-    "x  xxxxx  xxxxx  xxx",
-    "x                  x",
-    "x     xxxxxxxxx    x",
-    "x     xxxxxxxxx    x",
-    "x                  x",
-    "x     xxxxxxxxx    x",
-    "x     xxxxxxxxx    x",
-    "x                  x",
-    "x xxxxx x xxxxx xxxx",
-    "x xxxxx x xxxxx xxxx",
-    "x                  x",
-    "xxxxxxxxxxxxxxxxxxxx"
-]
+import pygame
+from maze import maze_map
 
 # Розмір кубіка
 CELL_SIZE = 30
@@ -41,13 +19,13 @@ class Wall(pygame.sprite.Sprite):
 
 def draw_maze():
     all_sprites = pygame.sprite.Group()
-
+    walls = pygame.sprite.Group()
 
     for y, row in enumerate(maze_map):
         for x, char in enumerate(row):
             if char == "x":
                 wall = Wall(x, y)
                 all_sprites.add(wall)
+                walls.add(wall)
 
-
-    return all_sprites
+    return all_sprites, walls

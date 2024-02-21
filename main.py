@@ -1,6 +1,7 @@
 import pygame
 import sys
 from wall import draw_maze
+from pacman import Pacman
 
 # Initialize Pygame
 pygame.init()
@@ -16,7 +17,13 @@ BLACK = (0, 0, 0)
 
 def main():
     # Створення карти
-    all_sprites = draw_maze()
+    all_sprites, walls = draw_maze()
+
+    #Створення пакмана    
+    pacman = Pacman(2, 2)
+    all_sprites.add(pacman)
+
+    clock = pygame.time.Clock()
 
     running = True
     while running:
@@ -24,9 +31,23 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            pacman.direction = (-1, 0)
+        elif keys[pygame.K_RIGHT]:
+            pacman.direction = (1, 0)
+        elif keys[pygame.K_UP]:
+            pacman.direction = (0, -1)
+        elif keys[pygame.K_DOWN]:
+            pacman.direction = (0, 1)
+
+        pacman.update(walls)
+
         WIN.fill(BLACK)
         all_sprites.draw(WIN)
         pygame.display.flip()
+
+        clock.tick(60)
 
     pygame.quit()
     sys.exit()

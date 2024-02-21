@@ -2,6 +2,7 @@ import pygame
 import sys
 from wall import *
 from pacman import Pacman
+from pacman import walk_down, walk_left, walk_right, walk_up
 
 # Initialize Pygame
 pygame.init()
@@ -28,7 +29,7 @@ def main():
     all_sprites, walls, fruits = draw_maze()
 
     #Створення пакмана    
-    pacman = Pacman(60, 60, speed=5)  # Начальная позиция пакмана в пикселях
+    pacman = Pacman(40, 40, speed=5)  # Начальная позиция пакмана в пикселях
     all_sprites.add(pacman)
 
     #Таблиця рахунку
@@ -41,22 +42,33 @@ def main():
     clock = pygame.time.Clock()
 
     running = True
+    player_anim_count = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
         keys = pygame.key.get_pressed()
+        
         if keys[pygame.K_LEFT]:
             pacman.direction = (-1, 0)
+            pacman.image = walk_left[player_anim_count]
         elif keys[pygame.K_RIGHT]:
             pacman.direction = (1, 0)
+            pacman.image = walk_right[player_anim_count]
         elif keys[pygame.K_UP]:
             pacman.direction = (0, -1)
+            pacman.image = walk_up[player_anim_count]
         elif keys[pygame.K_DOWN]:
             pacman.direction = (0, 1)
+            pacman.image = walk_down[player_anim_count]
+        
+        if player_anim_count == 2:
+            player_anim_count = 0
+        else: 
+            player_anim_count += 1
 
-            # Check if it's time to spawn a new fruit
+        # Check if it's time to spawn a new fruit
         current_time = pygame.time.get_ticks()
         if current_time - last_fruit_spawn_time >= fruit_spawn_interval:
             last_fruit_spawn_time = current_time
@@ -83,7 +95,7 @@ def main():
         pygame.display.flip()
 
 
-        clock.tick(48)
+        clock.tick(15)
 
     pygame.quit()
     sys.exit()

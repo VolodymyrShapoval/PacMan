@@ -1,7 +1,7 @@
 import pygame
 
 # Розмір кубіка пакмана
-CELL_SIZE = 15
+CELL_SIZE = 20
 
 # Колір пакмана
 YELLOW = (255, 255, 0)

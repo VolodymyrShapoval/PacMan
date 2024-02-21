@@ -1,10 +1,8 @@
 import pygame
-
-import pygame
 from maze import maze_map
 
 # Розмір кубіка
-CELL_SIZE = 30
+CELL_SIZE = 40
 
 # Колір кубіків
 BLUE = (0, 0, 255)

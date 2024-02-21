@@ -7,7 +7,7 @@ from pacman import Pacman
 pygame.init()
 
 # Налаштування дисплею
-WIDTH, HEIGHT = 1200, 1080
+WIDTH, HEIGHT = 600, 600
 CELL_SIZE = 30
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pacman")

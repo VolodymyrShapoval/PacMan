@@ -1,7 +1,7 @@
 import pygame
 
 # Розмір кубіка пакмана
-CELL_SIZE = 20
+CELL_SIZE = 10
 
 # Колір пакмана
 YELLOW = (255, 255, 0)
@@ -14,8 +14,8 @@ RIGHT = (1, 0)
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
         super().__init__()
-        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
-        self.image.fill(YELLOW)
+        original_image = pygame.image.load('img/Pacman.png')
+        self.image = pygame.transform.scale(original_image, (2 * CELL_SIZE, 2 * CELL_SIZE))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)  # Начальная позиция пакмана в пикселях
         self.direction = LEFT

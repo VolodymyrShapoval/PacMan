@@ -3,7 +3,7 @@ from maze import maze_map
 import random
 
 # Розмір кубіка
-CELL_SIZE = 40
+CELL_SIZE = 30
 
 # Колір кубіків
 BLUE = (0, 0, 255)
@@ -17,10 +17,10 @@ class Fruit(pygame.sprite.Sprite):
 
 # Wall class
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, border_radius = 5):
         super().__init__()
-        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
-        self.image.fill(BLUE)
+        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE), pygame.SRCALPHA)
+        pygame.draw.rect(self.image, BLUE, (0, 0, CELL_SIZE, CELL_SIZE), border_radius=border_radius)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x * CELL_SIZE, y * CELL_SIZE)
 

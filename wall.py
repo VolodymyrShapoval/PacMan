@@ -1,19 +1,13 @@
 import pygame
 from maze import maze_map
 import random
+from fruit import *
 
 # Розмір кубіка
 CELL_SIZE = 30
 
 # Колір кубіків
 BLUE = (0, 0, 255)
-class Fruit(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
-        self.image.fill((0,255,0))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x * CELL_SIZE, y * CELL_SIZE)
 
 # Wall class
 class Wall(pygame.sprite.Sprite):
@@ -47,7 +41,7 @@ def draw_maze():
                         break
                 if possible_spawn:
                     if random.randint(1, 10) == 1:  # Chance of spawning a fruit
-                        fruit = Fruit(x, y)
+                        fruit = Fruit(x, y, CELL_SIZE)
                         all_sprites.add(fruit)
                         fruits.add(fruit)
 

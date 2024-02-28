@@ -5,6 +5,7 @@ from wall import *
 from pacman import Pacman
 from pacman_animation import *
 from screen_settings import *
+from enemies_types import *
 
 # Initialize Pygame
 pygame.init()
@@ -15,7 +16,7 @@ BLACK = (0, 0, 0)
 
 def main():
     # Створення карти
-    all_sprites, walls, fruits = draw_maze()
+    all_sprites, walls, fruits, enemies = draw_maze()
 
     #Створення пакмана    
     pacman = Pacman(40, 40, speed=5)  # Начальная позиция пакмана в пикселях
@@ -25,6 +26,8 @@ def main():
     score = 0
     last_fruit_spawn_time = pygame.time.get_ticks()  # Time of the last fruit spawn
     fruit_spawn_interval = 4000  # 4 seconds
+    last_enemy_spawn_time = pygame.time.get_ticks()
+    enemy_spawn_interval = 10000 # 10 seconds
 
     font = pygame.font.SysFont(None, 30)
 
@@ -79,9 +82,19 @@ def main():
                     possible_spawns = [(x, y) for y, row in enumerate(maze_map) for x, char in enumerate(row) if char == " "]
                     if possible_spawns:
                         x, y = random.choice(possible_spawns)
-                        fruit = Fruit(x, y)
+                        fruit = Fruit(x, y, CELL_SIZE)
                         all_sprites.add(fruit)
                         fruits.add(fruit)
+
+            if current_time - last_enemy_spawn_time >= enemy_spawn_interval:
+                last_enemy_spawn_time = current_time
+                if len(enemies) < 5:
+                    possible_spawns = [(x, y) for y, row in enumerate(maze_map) for x, char in enumerate(row) if char == " "]
+                    if possible_spawns:
+                        x, y = random.choice(possible_spawns)
+                        enemy = Enemy(x, y, CELL_SIZE, speed=20, img=enemies_types[random.randint(0, len(enemies_types)-1)])
+                        all_sprites.add(enemy)
+                        enemies.add(enemy)           
 
             fruit_collisions = pygame.sprite.spritecollide(pacman, fruits, True)
             score += len(fruit_collisions)

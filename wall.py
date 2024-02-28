@@ -2,6 +2,7 @@ import pygame
 from maze import maze_map
 import random
 from fruit import *
+from enemy import *
 
 # Розмір кубіка
 CELL_SIZE = 30
@@ -23,6 +24,7 @@ def draw_maze():
     all_sprites = pygame.sprite.Group()
     walls = pygame.sprite.Group()
     fruits = pygame.sprite.Group()
+    enemies = pygame.sprite.Group()
 
     for y, row in enumerate(maze_map):
         for x, char in enumerate(row):
@@ -40,9 +42,12 @@ def draw_maze():
                     if not possible_spawn:
                         break
                 if possible_spawn:
+                    enemy = Enemy(x, y, 15, "/img/ghosts/blinky.png")
+                    all_sprites.add(enemy)
+                    enemies.add(enemy)
                     if random.randint(1, 10) == 1:  # Chance of spawning a fruit
                         fruit = Fruit(x, y, CELL_SIZE)
                         all_sprites.add(fruit)
                         fruits.add(fruit)
 
-    return all_sprites, walls, fruits
+    return all_sprites, walls, fruits, enemies

@@ -1,4 +1,5 @@
 import pygame
+from pacman_animation import *
 
 # Розмір кубіка пакмана
 CELL_SIZE = 10
@@ -14,7 +15,7 @@ RIGHT = (1, 0)
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
         super().__init__()
-        original_image = pygame.image.load('img/Pacman.png')
+        original_image = walk_right[0]
         self.image = pygame.transform.scale(original_image, (2 * CELL_SIZE, 2 * CELL_SIZE))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)  # Начальная позиция пакмана в пикселях

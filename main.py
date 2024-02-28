@@ -3,23 +3,11 @@ import sys
 import random
 from wall import *
 from pacman import Pacman
-
+from pacman_animation import *
+from screen_settings import *
 
 # Initialize Pygame
 pygame.init()
-
-# Налаштування дисплею
-WIDTH, HEIGHT = 600, 600
-CELL_SIZE = 30
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Pacman")
-
-icon = pygame.image.load("img/Pac_man_logo01.png")
-pygame.display.set_icon(icon)
-
-background_sound = pygame.mixer.Sound("sounds/pacman_chomp.wav")
-background_sound.set_volume(0.15)
-background_sound.play(loops=-1)
 
 # Задній фон
 WHITE = (255, 255, 255)
@@ -46,8 +34,8 @@ def main():
     pause_text = font.render("Paused", True, WHITE)
     last_pause_time = 0  # Время последней паузы
 
-
     running = True
+    player_anim_count = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -61,18 +49,28 @@ def main():
                     else:
                         background_sound.play(loops=-1)  
                         last_fruit_spawn_time += pygame.time.get_ticks() - last_pause_time  
-
+        
+        
         if not paused:  
             keys = pygame.key.get_pressed()
+            
             if keys[pygame.K_LEFT]:
                 pacman.direction = (-1, 0)
+                pacman.image = walk_left[player_anim_count]
             elif keys[pygame.K_RIGHT]:
                 pacman.direction = (1, 0)
+                pacman.image = walk_right[player_anim_count]
             elif keys[pygame.K_UP]:
                 pacman.direction = (0, -1)
+                pacman.image = walk_up[player_anim_count]
             elif keys[pygame.K_DOWN]:
                 pacman.direction = (0, 1)
-
+                pacman.image = walk_down[player_anim_count]
+            
+            if player_anim_count == 2:
+                player_anim_count = 0
+            else: 
+                player_anim_count += 1
 
             current_time = pygame.time.get_ticks()
             if current_time - last_fruit_spawn_time >= fruit_spawn_interval:
@@ -84,7 +82,6 @@ def main():
                         fruit = Fruit(x, y)
                         all_sprites.add(fruit)
                         fruits.add(fruit)
-
 
             fruit_collisions = pygame.sprite.spritecollide(pacman, fruits, True)
             score += len(fruit_collisions)
@@ -102,7 +99,8 @@ def main():
 
         pygame.display.flip()
 
-        clock.tick(30)
+
+        clock.tick(48)
 
     pygame.quit()
     sys.exit()

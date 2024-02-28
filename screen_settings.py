@@ -11,5 +11,5 @@ pygame.display.set_icon(icon)
 
 pygame.mixer.init()
 background_sound = pygame.mixer.Sound("sounds/pacman_chomp.wav")
-background_sound.set_volume(0.15)
+background_sound.set_volume(0.5)
 background_sound.play(loops=-1)

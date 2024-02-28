@@ -1,4 +1,5 @@
 import pygame
+import pygame_gui
 import sys
 import random
 from wall import *
@@ -34,9 +35,13 @@ def main():
     pause_text = font.render("Paused", True, WHITE)
     last_pause_time = 0  # Время последней паузы
 
+    gui_manager = None  # Инициализация менеджера GUI
+    volume_slider = None  # Инициализация ползунка громкости
     running = True
     player_anim_count = 0
     while running:
+        time_delta = clock.tick(60) / 1000.0
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -44,13 +49,31 @@ def main():
                 if event.key == pygame.K_SPACE:
                     paused = not paused
                     if paused:
+                        # Создание менеджера GUI и ползунка для громкости при паузе
+                        gui_manager = pygame_gui.UIManager((WIDTH, HEIGHT))
+                        volume_slider = pygame_gui.elements.UIHorizontalSlider(
+                            relative_rect=pygame.Rect((200, 400), (200, 20)),
+                            start_value=background_sound.get_volume(),  # Используем текущий уровень громкости как начальное значение
+                            value_range=(0.0, 1.0),
+                            manager=gui_manager,
+                        )
                         background_sound.stop() 
                         last_pause_time = pygame.time.get_ticks()  
                     else:
+                        # Очистка менеджера GUI при выходе из паузы
+                        gui_manager = None
+                        volume_slider = None
                         background_sound.play(loops=-1)  
                         last_fruit_spawn_time += pygame.time.get_ticks() - last_pause_time  
-        
-        
+            
+            # Обработка событий GUI
+            if gui_manager:
+                gui_manager.process_events(event)
+
+        # Обновление громкости музыки в зависимости от значения ползунка
+        if volume_slider:
+            background_sound.set_volume(volume_slider.get_current_value())
+
         if not paused:  
             keys = pygame.key.get_pressed()
             
@@ -88,7 +111,6 @@ def main():
 
             pacman.update(walls)
 
-
         WIN.fill(BLACK)
         all_sprites.draw(WIN)
         score_text = font.render(f"Score: {score}", True, WHITE)
@@ -96,11 +118,12 @@ def main():
 
         if paused:  
             WIN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, HEIGHT // 2 - pause_text.get_height() // 2))
+            # Рисуем GUI только во время паузы, если он существует
+            if gui_manager:
+                gui_manager.update(time_delta)
+                gui_manager.draw_ui(WIN)
 
         pygame.display.flip()
-
-
-        clock.tick(48)
 
     pygame.quit()
     sys.exit()

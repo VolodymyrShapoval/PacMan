@@ -2,9 +2,7 @@ import pygame
 from maze import maze_map
 import random
 from fruit import *
-
-# Розмір кубіка
-CELL_SIZE = 30
+from screen_settings import *
 
 # Колір кубіків
 BLUE = (0, 0, 255)

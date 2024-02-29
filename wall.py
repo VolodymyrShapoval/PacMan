@@ -42,10 +42,10 @@ def draw_maze():
                     if not possible_spawn:
                         break
                 if possible_spawn:
-                    enemy = Enemy(x, y, 15, "/img/ghosts/blinky.png")
+                    enemy = Enemy(x, y, 15, "/img/ghosts/blinky.png")  # Путь к изображению призрака
                     all_sprites.add(enemy)
                     enemies.add(enemy)
-                    if random.randint(1, 10) == 1:  # Chance of spawning a fruit
+                    if random.randint(1, 10) == 1:  # Шанс появления фрукта
                         fruit = Fruit(x, y, CELL_SIZE)
                         all_sprites.add(fruit)
                         fruits.add(fruit)

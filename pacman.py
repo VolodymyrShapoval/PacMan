@@ -1,5 +1,6 @@
 import pygame
 from pacman_animation import *
+import enemy
 
 # Розмір кубіка пакмана
 CELL_SIZE = 10
@@ -28,3 +29,5 @@ class Pacman(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, walls, False):
             self.rect.move_ip(-self.direction[0] * self.speed, -self.direction[1] * self.speed)  # Возвращаем пакмана, если он столкнулся с препятствием
             self.direction = (0, 0)  # Останавливаем его движение
+        print(f"Direction: {self.direction}, Position: ({self.rect.x}, {self.rect.y})")
+        #print(enemy.Enemy.get_cells(self.rect.topleft[0],self.rect.topleft[1]))

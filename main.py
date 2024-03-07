@@ -181,7 +181,7 @@ def main():
                     possible_spawns = [(x, y) for y, row in enumerate(maze_map) for x, char in enumerate(row) if char == " "]
                     if possible_spawns:
                         x, y = random.choice(possible_spawns)
-                        enemy = Enemy(x, y, 15, enemies_types[random.randint(0, len(enemies_types)-1)])  # Путь к изображению призрака
+                        enemy = Enemy(x, y, 15, enemies_types[random.randint(0, len(enemies_types)-1)], pacman.rect)
                         all_sprites.add(enemy)
                         enemies.add(enemy)
 
@@ -190,9 +190,9 @@ def main():
 
             pacman.update(walls)
             
-            # Обновление положения врагов
+            # Оновлюємо положення врагів, передаючи прямокутник пакмана
             for enemy in enemies:
-                enemy.update(walls)
+                enemy.update(walls, pacman.rect, time_delta)
 
         WIN.fill(BLACK)
         all_sprites.draw(WIN)
@@ -213,8 +213,9 @@ def main():
     sys.exit()
 
 if __name__ == "__main__":
-    while True:
-        selected_difficulty = choose_difficulty_level()
-        if selected_difficulty:
-            break
+    choose_difficulty_level()
+    # while True:
+        # selected_difficulty = choose_difficulty_level()
+        # if selected_difficulty:
+        #     break
     main()

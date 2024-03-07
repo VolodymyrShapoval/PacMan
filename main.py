@@ -11,10 +11,6 @@ from enemies_types import *
 # Initialize Pygame
 pygame.init()
 
-# Задний фон
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
 def main():
     # Создание карты
     all_sprites, walls, fruits, enemies = draw_maze()
@@ -28,7 +24,7 @@ def main():
     last_fruit_spawn_time = pygame.time.get_ticks()  # Время последнего появления фрукта
     fruit_spawn_interval = 4000  # 4 секунды
     last_enemy_spawn_time = pygame.time.get_ticks()
-    enemy_spawn_interval = 3000  # 10 секунд
+    enemy_spawn_interval = 1000  # 10 секунд
 
     font = pygame.font.SysFont(None, 30)
 
@@ -81,7 +77,15 @@ def main():
 
             # Проверка столкновения Пакмана с врагами
             if pygame.sprite.spritecollideany(pacman, enemies):
+
+                dead = font.render("Game Over", True, WHITE)
+
+                WIN.blit(dead, (WIDTH // 2 - dead.get_width() // 2, HEIGHT // 2 - dead.get_height() // 2))
+
                 print("Game Over! You lost!")
+                
+                all_sprites.remove(pacman)
+
                 # Сброс счета
                 score = 0
                 # Удаление всех фруктов
@@ -90,7 +94,9 @@ def main():
                 enemies.empty()
                 # Создание карты заново
                 all_sprites, walls, fruits, enemies = draw_maze()
-                # Перемещение Пакмана в начальное положение
+
+                all_sprites.add(pacman)
+                # Перемещаем Пакмана в начальное положение
                 pacman.rect.topleft = (40, 40)
 
             keys = pygame.key.get_pressed()
@@ -139,9 +145,9 @@ def main():
 
             pacman.update(walls)
             
-            # Обновление положения врагов
+            # Обновление положения врагов и передача позиции Пакмана для определения видимости
             for enemy in enemies:
-                enemy.update(walls)
+                enemy.update(walls, pacman)
 
         WIN.fill(BLACK)
         all_sprites.draw(WIN)

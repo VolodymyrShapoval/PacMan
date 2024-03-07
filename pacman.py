@@ -20,6 +20,7 @@ class Pacman(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)  # Начальная позиция пакмана в пикселях
         self.direction = LEFT
+        self.isDead = False
         self.speed = speed  # Устанавливаем скорость пакмана
 
     def update(self, walls):

@@ -2,22 +2,74 @@ import pygame
 import pygame_gui
 import sys
 import random
+from configuration import Configuration
 from wall import *
 from pacman import Pacman
 from pacman_animation import *
 from screen_settings import *
 from enemies_types import *
 
-# Initialize Pygame
-pygame.init()
+# # Initialize Pygame
+# pygame.init()
+
+# Рівень складності
+selected_difficulty = None
+enemies_count = None
 
 # Задний фон
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+# Оголошення змінних
+WIN = None
+clock = None
+background_sound = None
+
+def initialize():
+    global WIN, clock, background_sound
+    
+    pygame.init()
+    
+    # Налаштування дисплею
+    WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Pacman")
+
+    icon = pygame.image.load("img/Pac_man_logo01.png")
+    pygame.display.set_icon(icon)
+
+    pygame.mixer.init()
+    background_sound = pygame.mixer.Sound("sounds/background_music.mp3")
+    background_sound.set_volume(0.5)
+    background_sound.play(loops=-1)
+
+    clock = pygame.time.Clock()
+
+def choose_difficulty_level():
+    global enemies_count
+
+    config = Configuration()
+    config.set_difficulty()
+    selected_difficulty = config.get_difficulty()
+
+    if selected_difficulty == "easy": enemies_count = 5
+    elif selected_difficulty == "medium": enemies_count = 8
+    elif selected_difficulty == "hard": enemies_count = 12
+    print(f"Обраний рівень складності: {selected_difficulty}")
+    return selected_difficulty
+
 def main():
+    global enemies_count
+
+    global WIN, clock, background_sound
+    
+    initialize()
+
     # Создание карты
     all_sprites, walls, fruits, enemies = draw_maze()
+
+    if selected_difficulty == "easy": enemies_count = 5
+    elif selected_difficulty == "medium": enemies_count = 8
+    elif selected_difficulty == "hard": enemies_count = 12
 
     # Создание Пакмана
     pacman = Pacman(40, 40, speed=5)
@@ -78,10 +130,9 @@ def main():
             background_sound.set_volume(volume_slider.get_current_value())
 
         if not paused:
-
             # Проверка столкновения Пакмана с врагами
             if pygame.sprite.spritecollideany(pacman, enemies):
-                print("Game Over! You lost!")
+                pacman.dead = True
                 # Сброс счета
                 score = 0
                 # Удаление всех фруктов
@@ -126,7 +177,7 @@ def main():
 
             if current_time - last_enemy_spawn_time >= enemy_spawn_interval:
                 last_enemy_spawn_time = current_time
-                if len(enemies) < 5:
+                if len(enemies) < enemies_count:
                     possible_spawns = [(x, y) for y, row in enumerate(maze_map) for x, char in enumerate(row) if char == " "]
                     if possible_spawns:
                         x, y = random.choice(possible_spawns)
@@ -155,10 +206,15 @@ def main():
                 gui_manager.update(time_delta)
                 gui_manager.draw_ui(WIN)
 
+            
         pygame.display.flip()
 
     pygame.quit()
     sys.exit()
 
 if __name__ == "__main__":
+    while True:
+        selected_difficulty = choose_difficulty_level()
+        if selected_difficulty:
+            break
     main()

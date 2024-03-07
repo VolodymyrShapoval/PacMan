@@ -2,6 +2,7 @@ import pygame
 import random
 from screen_settings import *
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, size, image_path):
         super().__init__()

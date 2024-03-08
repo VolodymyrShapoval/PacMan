@@ -1,4 +1,4 @@
-# Map representing the maze
+# Карта, яка представляє лабіринт
 maze_map = [
     "xxxxxxxxxxxxxxxxxxxx",
     "x        x         x",

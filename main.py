@@ -9,22 +9,20 @@ from pacman_animation import *
 from screen_settings import *
 from enemies_types import *
 
-# # Initialize Pygame
-# pygame.init()
+# Змінні для встановлення кольорів
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
 # Рівень складності
 selected_difficulty = None
 enemies_count = None
 
-# Задний фон
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+# Глобальні змінні для гри
+WIN = None  # Вікно гри
+clock = None  # Глобальний об'єкт для відстеження часу
+background_sound = None  # Об'єкт для відтворення фонової музики
 
-# Оголошення змінних
-WIN = None
-clock = None
-background_sound = None
-
+# Ініціалізація гри
 def initialize():
     global WIN, clock, background_sound
     
@@ -44,6 +42,7 @@ def initialize():
 
     clock = pygame.time.Clock()
 
+# Вибір рівня складності
 def choose_difficulty_level():
     global enemies_count
 
@@ -57,16 +56,16 @@ def choose_difficulty_level():
     print(f"Обраний рівень складності: {selected_difficulty}")
     return selected_difficulty
 
+# Основна функція гри
 def main():
-    global enemies_count
-
-    global WIN, clock, background_sound
+    global enemies_count, WIN, clock, background_sound, selected_difficulty
     
     initialize()
 
     # Создание карты
     all_sprites, walls, fruits, enemies = draw_maze()
 
+    # Визначення кількості ворогів в залежності від рівня складності
     if selected_difficulty == "easy": enemies_count = 5
     elif selected_difficulty == "medium": enemies_count = 8
     elif selected_difficulty == "hard": enemies_count = 12
@@ -90,8 +89,8 @@ def main():
     pause_text = font.render("Paused", True, WHITE)
     last_pause_time = 0  # Время последней паузы
 
-    gui_manager = None  # Инициализация менеджера GUI
-    volume_slider = None  # Инициализация ползунка громкости
+    gui_manager = None  # Ініціалізація менеджера GUI
+    volume_slider = None  # Ініціалізація слайдера гучності
     running = True
     player_anim_count = 0
     while running:
@@ -104,7 +103,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     paused = not paused
                     if paused:
-                        # Создание менеджера GUI и ползунка для громкости при паузе
+                        # Создание менеджера GUI и слайдера громкости при паузе
                         gui_manager = pygame_gui.UIManager((WIDTH, HEIGHT))
                         volume_slider = pygame_gui.elements.UIHorizontalSlider(
                             relative_rect=pygame.Rect((200, 400), (200, 20)),
@@ -115,43 +114,37 @@ def main():
                         background_sound.stop() 
                         last_pause_time = pygame.time.get_ticks()
                     else:
-                        # Очистка менеджера GUI при выходе из паузы
+                        # Очистка менеджера GUI при виході з паузи
                         gui_manager = None
                         volume_slider = None
                         background_sound.play(loops=-1)
                         last_fruit_spawn_time += pygame.time.get_ticks() - last_pause_time
 
-            # Обработка событий GUI
+            # Обробка подій GUI
             if gui_manager:
                 gui_manager.process_events(event)
 
-        # Обновление громкости музыки в зависимости от значения ползунка
+        # Оновлення гучності музики в залежності від значення слайдера
         if volume_slider:
             background_sound.set_volume(volume_slider.get_current_value())
 
         if not paused:
-            # Проверка столкновения Пакмана с врагами
+            # Перевірка зіткнення Пакмана з ворогами
             if pygame.sprite.spritecollideany(pacman, enemies):
-
                 dead = font.render("Game Over", True, WHITE)
-
                 WIN.blit(dead, (WIDTH // 2 - dead.get_width() // 2, HEIGHT // 2 - dead.get_height() // 2))
-
                 print("Game Over! You lost!")
-                
                 all_sprites.remove(pacman)
-
-                # Сброс счета
+                # Скидання рахунку
                 score = 0
-                # Удаление всех фруктов
+                # Видалення всіх фруктів
                 fruits.empty()
-                # Удаление всех врагов
+                # Видалення всіх ворогів
                 enemies.empty()
-                # Создание карты заново
+                # Створення карти знову
                 all_sprites, walls, fruits, enemies = draw_maze()
-
                 all_sprites.add(pacman)
-                # Перемещаем Пакмана в начальное положение
+                # Переміщуємо Пакмана в початкове положення
                 pacman.rect.topleft = (40, 40)
 
             keys = pygame.key.get_pressed()
@@ -200,7 +193,7 @@ def main():
 
             pacman.update(walls)
             
-            # Обновление положения врагов и передача позиции Пакмана для определения видимости
+            # Оновлення положення ворогів і передача позиції Пакмана для визначення видимості
             for enemy in enemies:
                 enemy.update(walls, pacman)
 
@@ -211,12 +204,11 @@ def main():
 
         if paused:
             WIN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, HEIGHT // 2 - pause_text.get_height() // 2))
-            # Рисуем GUI только во время паузы, если он существует
+            # Рисуємо GUI тільки під час паузи, якщо він існує
             if gui_manager:
                 gui_manager.update(time_delta)
                 gui_manager.draw_ui(WIN)
 
-            
         pygame.display.flip()
 
     pygame.quit()
@@ -224,8 +216,6 @@ def main():
 
 if __name__ == "__main__":
     choose_difficulty_level()
-    # while True:
-        # selected_difficulty = choose_difficulty_level()
-        # if selected_difficulty:
-        #     break
     main()
+
+# Завершення документації
